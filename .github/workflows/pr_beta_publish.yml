@@ -343,6 +343,9 @@ jobs:
   notify_failure:
     needs: [build, publish]
     if: ${{ always() && needs.build.outputs.authorized == 'true' && (needs.build.result == 'failure' || needs.publish.result == 'failure') }}
+    permissions:
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
