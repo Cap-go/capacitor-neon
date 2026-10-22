@@ -2,6 +2,20 @@
 
 Use Neon Auth and the Neon Data API natively from your Capacitor app for auth and database calls, and get JWTs for your web layer.
 
+<a href="https://capgo.app/?ref=plugin_neon"><img src="https://raw.githubusercontent.com/rishi-raj-jain/capacitor-neon/main/assets/readme-banner.svg" alt="Capgo - Build Capacitor apps with AI, ship updates instantly" /></a>
+
+<div align="center">
+  <p><b>Capgo</b>: push fixes to your Capacitor users in minutes, build signed iOS and Android apps without a Mac, and roll back in one click.</p>
+  <h2><a href="https://capgo.app/register/?ref=plugin_neon">➡️ Get started for free</a></h2>
+  <p>14-day unlimited free trial. No credit card required</p>
+</div>
+
+> 🤖 **Building with an AI coding agent?** Install [Capgo skills](https://capgo.app/skills/?ref=plugin_neon) so Claude Code, Codex, Cursor, Copilot, or Gemini CLI know how to install and use `capacitor-neon` in your Capacitor app: `npx skills add Cap-go/capgo-skills`. Then ask your agent: *"Add capacitor-neon to my Capacitor app and wire it up."* [Agent setup guides](https://capgo.app/agents/?ref=plugin_neon) · [Hosted MCP](https://capgo.app/docs/ai/mcp/?ref=plugin_neon)
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rishi-raj-jain/capacitor-neon/main/assets/github-social-preview.png" alt="capacitor-neon for Capacitor apps" width="300" />
+</p>
+
 ## Key features
 
 - **Auth methods**: email and password, sign up, OAuth providers (Google, GitHub, Vercel) and email OTP with `verifyOtp()`.
@@ -13,23 +27,30 @@ Use Neon Auth and the Neon Data API natively from your Capacitor app for auth an
 
 ## Why Capacitor Neon?
 
-Neon Auth is Managed Better Auth. It keeps the session in an HTTP-only cookie, and the browser SDK depends on cookies and redirects that do not behave well inside a Capacitor WebView. This plugin runs those requests natively instead:
+A native Neon Auth integration that provides **real native authentication** with JWT token access for your Capacitor apps:
 
-- **Native session handling** - The session cookie is captured and stored natively, never exposed to WebView cookie storage
-- **JWT token access** - Get Neon Auth JWTs from native auth for use in JavaScript/web layers
+- **Native session handling** - The Neon Auth session cookie is captured and stored natively, never exposed to WebView cookie storage
+- **JWT token access** - Get JWT tokens from native auth for use in JavaScript/web layers
 - **Complete auth methods** - Email/password, OAuth, and email OTP
-- **Session management** - Persistent sessions with automatic JWT refresh
+- **Session management** - Sessions persist across app restarts, and a new JWT is minted when the cached one is about to expire
 - **Database operations** - Native CRUD operations for Neon Data API tables
 - **Auth state listeners** - Real-time auth state change events
 - **Hybrid approach** - Use native auth with `@neondatabase/neon-js` for database queries
 - **Free and open source** - No paid services required
 
-**Why only Auth and basic DB operations?** The Neon JS SDK already works in Capacitor for database queries through the Data API. This plugin focuses on **authentication**, where native code provides real value (cookie handling, secure token storage, OAuth redirects back into the app). For everything else, use `@neondatabase/neon-js` with the JWT from native auth.
+Perfect for apps that need secure native authentication while using Neon's Postgres, Auth, and Data API.
+
+**Why only Auth and basic DB operations?** The Neon JS SDK already works in Capacitor for database queries through the Data API. Neon Auth keeps the session in an HTTP-only cookie, and the browser SDK depends on cookies and redirects that do not behave well inside a Capacitor WebView. This plugin focuses on **authentication**, where native code provides real value (cookie handling, secure token storage, OAuth redirects back into the app). For everything else, use `@neondatabase/neon-js` with the JWT from native auth.
 
 **Why not bridge everything natively?**
-- **No performance gain** - The bridge overhead (JSON serialization/deserialization between JS and native) negates any benefit from skipping HTTP preflight requests.
-- **Type safety issue** - Native code would need typed models for every table and query. With JS, you get dynamic typing that just works.
-- **Maintenance burden** - Every Neon SDK update would require updating 3 codebases (JS, iOS, Android) instead of one.
+- **No performance gain** - The bridge overhead (JSON serialization/deserialization between JS and native) negates any benefit from skipping HTTP preflight requests. You're just moving the transformation cost from network to CPU.
+- **Type safety issue** - Native code would need typed models for every table/query. You'd need to define Swift/Kotlin types for your entire database schema and keep them in sync. With JS, you get dynamic typing that just works.
+- **Maintenance burden** - Every Neon SDK update would require updating 3 codebases (JS, iOS, Android) instead of just one.
+
+## Documentation
+
+- Neon Auth: https://neon.com/docs/auth/overview
+- Neon Data API: https://neon.com/docs/data-api/get-started
 
 ## Compatibility
 
@@ -37,9 +58,23 @@ Neon Auth is Managed Better Auth. It keeps the session in an HTTP-only cookie, a
 | -------------- | ----------------------- | ---------- |
 | v8.\*.\*       | v8.\*.\*                | ✅          |
 
-> **Note:** The major version of this plugin follows the major version of Capacitor.
+> **Note:** The major version of this plugin follows the major version of Capacitor. Use the version that matches your Capacitor installation (e.g., plugin v8 for Capacitor 8). Only the latest major version is actively maintained.
 
 ## Install
+
+You can use our AI-Assisted Setup to install the plugin. Add the Capgo skills to your AI tool using the following command:
+
+```bash
+npx skills add https://github.com/cap-go/capacitor-skills --skill capacitor-plugins
+```
+
+Then use the following prompt:
+
+```text
+Use the `capacitor-plugins` skill from `cap-go/capacitor-skills` to install the `capacitor-neon` plugin in my project.
+```
+
+If you prefer Manual Setup, install the plugin by running the following commands and follow the platform-specific instructions below:
 
 ```bash
 npm install capacitor-neon
@@ -56,15 +91,19 @@ Neon Auth only accepts requests from trusted origins. Localhost is trusted by de
 
 ## iOS Setup
 
-No additional setup required for email and OTP sign-in. The plugin has no third-party dependencies.
+No additional setup required for email and OTP sign-in. The plugin uses URLSession and the Keychain, with no third-party dependencies.
 
-For OAuth, set up a Universal Link for the `redirectTo` URL you pass to `signInWithOAuth()` (see [OAuth Sign In](#oauth-sign-in)).
+For OAuth, set up a Universal Link or a custom URL scheme for the `redirectTo` URL you pass to `signInWithOAuth()` (see [OAuth Sign In](#oauth-sign-in)).
 
 ## Android Setup
 
-No additional setup required for email and OTP sign-in. The plugin works with the Capacitor 8 default `minSdkVersion` of 24.
+No additional setup required for email and OTP sign-in. The plugin works with the Capacitor 8 default minimum SDK of 24 (Android 7.0). Make sure your `android/variables.gradle` has at least:
 
-For OAuth, set up an App Link for the `redirectTo` URL you pass to `signInWithOAuth()` (see [OAuth Sign In](#oauth-sign-in)).
+```gradle
+minSdkVersion = 24
+```
+
+For OAuth, set up an App Link or a custom URL scheme for the `redirectTo` URL you pass to `signInWithOAuth()` (see [OAuth Sign In](#oauth-sign-in)).
 
 ## Usage
 
@@ -273,6 +312,15 @@ const { data, error } = await CapacitorNeon.select({
 const { data, error } = await CapacitorNeon.insert({
   table: 'posts',
   values: { title: 'Hello', content: 'World' }
+});
+```
+
+Pass an array to insert several rows at once. Rows can have different columns, and missing columns get their default values:
+
+```typescript
+const { data, count } = await CapacitorNeon.insert({
+  table: 'posts',
+  values: [{ title: 'First', published: true }, { title: 'Second' }]
 });
 ```
 
@@ -893,8 +941,6 @@ Auth state change event types.
 
 Construct a type with a set of properties K of type T
 
-<code>{
- [P in K]: T;
- }</code>
+<code>{ [P in K]: T; }</code>
 
 </docgen-api>
