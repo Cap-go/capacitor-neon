@@ -20,10 +20,21 @@ PASTE OUTPUT HERE
 
 ### Plugin Version
 <!--
-Paste the output from the `npm list capacitor-neon` command into the code block below.
+Paste the output from the `npx @capgo/cli@latest doctor` command into the code block below. This will provide the versions of Capacitor updater package.
 -->
 ```
 PASTE OUTPUT HERE
+```
+
+### context(s)
+<!--
+Please change the value acording to your context
+-->
+```md
+ManualModel: false
+AutoMode: false
+CapgoCloud: false
+OnPremise: false
 ```
 
 ### Platform(s)
@@ -50,6 +61,7 @@ Describe what the behavior should be.
 ### Code Reproduction
 <!--
 To isolate the cause of the problem, we ask you to provide a minimal sample application that demonstrates the issue.
+For full instructions, see: https://github.com/ionic-team/capacitor/blob/HEAD/CONTRIBUTING.md#creating-a-code-reproduction
 -->
 
 

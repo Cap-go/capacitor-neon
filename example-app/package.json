@@ -1,7 +1,7 @@
 {
   "name": "capacitor-app",
   "version": "1.0.0",
-  "description": "Example Capacitor app for capacitor-neon",
+  "description": "Example Capacitor app for @capgo/capacitor-neon",
   "type": "module",
   "keywords": [
     "capacitor",
@@ -17,7 +17,7 @@
     "@capacitor/core": "^8.5.3",
     "@capacitor/android": "^8.5.3",
     "@capacitor/ios": "^8.5.3",
-    "capacitor-neon": "file:.."
+    "@capgo/capacitor-neon": "file:.."
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.3",

@@ -2,11 +2,11 @@
 import PackageDescription
 
 let package = Package(
-    name: "CapacitorNeon",
+    name: "CapgoCapacitorNeon",
     platforms: [.iOS(.v15)],
     products: [
         .library(
-            name: "CapacitorNeon",
+            name: "CapgoCapacitorNeon",
             targets: ["CapacitorNeonPlugin"])
     ],
     dependencies: [

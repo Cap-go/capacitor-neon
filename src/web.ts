@@ -22,17 +22,14 @@ import type {
 } from './definitions';
 
 export class CapacitorNeonWeb extends WebPlugin implements CapacitorNeonPlugin {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async initialize(_options: NeonConfig): Promise<void> {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async signInWithPassword(_options: SignInWithPasswordOptions): Promise<AuthResult> {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async signUp(_options: SignUpOptions): Promise<AuthResult> {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
@@ -41,17 +38,14 @@ export class CapacitorNeonWeb extends WebPlugin implements CapacitorNeonPlugin {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async signInWithOAuth(_options: SignInWithOAuthOptions): Promise<void> {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async signInWithOtp(_options: SignInWithOtpOptions): Promise<void> {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async verifyOtp(_options: VerifyOtpOptions): Promise<AuthResult> {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
@@ -72,34 +66,29 @@ export class CapacitorNeonWeb extends WebPlugin implements CapacitorNeonPlugin {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async setSession(_options: SetSessionOptions): Promise<{ session: Session | null }> {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async select<T = unknown>(_options: SelectOptions): Promise<QueryResult<T[]>> {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async insert<T = unknown>(_options: InsertOptions): Promise<QueryResult<T>> {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async update<T = unknown>(_options: UpdateOptions): Promise<QueryResult<T>> {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async delete<T = unknown>(_options: DeleteOptions): Promise<QueryResult<T>> {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
   }
 
   override async addListener(
     _eventName: 'authStateChange',
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     _listenerFunc: (data: AuthStateChange) => void,
   ): Promise<{ remove: () => Promise<void> }> {
     throw new Error('Web implementation not available. Use @neondatabase/neon-js directly for web.');
