@@ -11,10 +11,6 @@ on:
         required: true
         type: number
 
-concurrency:
-  group: pr-beta-${{ github.event.issue.number || inputs.pr_number }}
-  cancel-in-progress: false
-
 permissions:
   contents: read
   id-token: write
@@ -22,11 +18,20 @@ permissions:
   pull-requests: write
 
 jobs:
-  publish:
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.issue.pull_request && contains(github.event.comment.body, '/publish-beta')) }}
+  build:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.issue.pull_request && contains(github.event.comment.body, '/publish-beta') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)) }}
     runs-on: ubuntu-latest
-    # Keep this job capped at 10 minutes; never raise it unless explicitly asked.
+    concurrency:
+      group: pr-beta-${{ github.event.issue.number || inputs.pr_number }}
+      cancel-in-progress: false
     timeout-minutes: 10
+    outputs:
+      authorized: ${{ steps.pr.outputs.authorized }}
+      pr_number: ${{ steps.pr.outputs.pr_number }}
+      actor: ${{ steps.pr.outputs.actor }}
+      head_sha: ${{ steps.pr.outputs.head_sha }}
+      package_name: ${{ steps.version.outputs.package_name }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Resolve PR and access checks
         id: pr
@@ -34,7 +39,7 @@ jobs:
         with:
           script: |
             const prNumber = context.eventName === 'workflow_dispatch'
-              ? Number(core.getInput('pr_number'))
+              ? Number(context.payload.inputs.pr_number)
               : context.payload.issue.number;
 
             const { owner, repo } = context.repo;
@@ -50,27 +55,46 @@ jobs:
 
             core.setOutput('actor', actor);
             core.setOutput('pr_number', String(prNumber));
+            core.setOutput('authorized', 'true');
 
             if (pr.state !== 'open') {
+              core.setOutput('authorized', 'false');
               core.setFailed(`PR #${prNumber} is not open.`);
               return;
             }
 
             if (pr.head.repo.full_name !== `${owner}/${repo}`) {
+              core.setOutput('authorized', 'false');
               core.setFailed('Fork PRs cannot publish beta packages because the workflow needs repository secrets.');
               return;
             }
 
             if (context.eventName === 'issue_comment') {
-              const actor = context.payload.comment.user.login;
+              core.setOutput('authorized', 'false');
+              const commentActor = context.payload.comment.user.login;
+              const { data: permission } = await github.rest.repos.getCollaboratorPermissionLevel({
+                owner,
+                repo,
+                username: commentActor,
+              });
+              const allowed = ['admin', 'maintain', 'write'].includes(permission.permission);
+
+              if (!allowed) {
+                core.setFailed(`@${commentActor} does not have permission to publish beta packages.`);
+                return;
+              }
+              core.setOutput('authorized', 'true');
+            }
+
+            if (context.eventName === 'workflow_dispatch') {
               const { data: permission } = await github.rest.repos.getCollaboratorPermissionLevel({
                 owner,
                 repo,
                 username: actor,
               });
               const allowed = ['admin', 'maintain', 'write'].includes(permission.permission);
-
               if (!allowed) {
+                core.setOutput('authorized', 'false');
                 core.setFailed(`@${actor} does not have permission to publish beta packages.`);
                 return;
               }
@@ -102,6 +126,7 @@ jobs:
             const rollupState = prState.repository.pullRequest.commits.nodes[0]?.commit.statusCheckRollup?.state ?? 'PENDING';
 
             if (rollupState !== 'SUCCESS') {
+              core.setOutput('authorized', 'false');
               core.setFailed(`PR checks are not green yet (current state: ${rollupState}).`);
               return;
             }
@@ -123,7 +148,7 @@ jobs:
               '',
               `Requested by @${actor}.`,
               '',
-              `This run will publish the PR head to the \`beta\` npm tag.`,
+              `This run will stage the PR head on the \`beta\` npm tag.`,
               '',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
             ].join('\n');
@@ -195,6 +220,30 @@ jobs:
       - name: Build
         run: bun run build
 
+      - name: Pack npm tarball
+        run: |
+          mkdir -p /tmp/npm-package
+          bun pm pack --destination /tmp/npm-package --quiet
+          ls -la /tmp/npm-package
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-package
+          path: /tmp/npm-package/*.tgz
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: npm-package
+          path: /tmp/npm-package
+
       - name: Setup Node.js for npm publish
         uses: actions/setup-node@v7
         with:
@@ -209,8 +258,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm --version
-          npm stage publish --tag beta --provenance --access public --ignore-scripts
-
+          npm stage publish --tag beta --provenance --access public --ignore-scripts /tmp/npm-package/*.tgz
 
       - name: Request stage approval
         continue-on-error: true
@@ -221,18 +269,18 @@ jobs:
             -f event_type=npm-stage-approve \
             -f "client_payload[repository]=${GITHUB_REPOSITORY}" \
             -f "client_payload[run_id]=${GITHUB_RUN_ID}" \
-            -f "client_payload[package]=${{ steps.version.outputs.package_name }}"
+            -f "client_payload[package]=${{ needs.build.outputs.package_name }}"
       - name: Publish success comment
         if: ${{ success() }}
         uses: actions/github-script@v9
         with:
           script: |
             const marker = '<!-- pr-beta-publish -->';
-            const prNumber = Number('${{ steps.pr.outputs.pr_number }}');
-            const actor = '${{ steps.pr.outputs.actor }}';
-            const packageName = '${{ steps.version.outputs.package_name }}';
-            const version = '${{ steps.version.outputs.version }}';
-            const shortSha = '${{ steps.pr.outputs.head_sha }}'.slice(0, 7);
+            const prNumber = Number('${{ needs.build.outputs.pr_number }}');
+            const actor = '${{ needs.build.outputs.actor }}';
+            const packageName = '${{ needs.build.outputs.package_name }}';
+            const version = '${{ needs.build.outputs.version }}';
+            const shortSha = '${{ needs.build.outputs.head_sha }}'.slice(0, 7);
             const body = [
               marker,
               '',
@@ -244,7 +292,7 @@ jobs:
               `Source: \`${shortSha}\``,
               `Requested by @${actor}`,
               '',
-              'Latest beta:',
+              'After npm stage approval, install with:',
               '```sh',
               `bun add ${packageName}@beta`,
               `bun add ${packageName}@${version}`,
@@ -279,13 +327,18 @@ jobs:
               body,
             });
 
+  notify_failure:
+    needs: [build, publish]
+    if: ${{ always() && needs.build.outputs.authorized == 'true' && (needs.build.result == 'failure' || needs.publish.result == 'failure') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
       - name: Publish failure comment
-        if: ${{ failure() && steps.pr.outputs.pr_number != '' }}
         uses: actions/github-script@v9
         with:
           script: |
             const marker = '<!-- pr-beta-publish -->';
-            const prNumber = Number('${{ steps.pr.outputs.pr_number }}');
+            const prNumber = Number('${{ needs.build.outputs.pr_number }}');
             const body = [
               marker,
               '',

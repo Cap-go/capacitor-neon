@@ -20,7 +20,7 @@ PASTE OUTPUT HERE
 
 ### Plugin Version
 <!--
-Paste the output from the `npx @capgo/cli@latest doctor` command into the code block below. This will provide the versions of Capacitor updater package.
+Paste the output from `bun pm ls @capgo/capacitor-neon` (or `npm ls @capgo/capacitor-neon`) into the code block below.
 -->
 ```
 PASTE OUTPUT HERE

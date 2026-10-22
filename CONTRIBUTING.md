@@ -7,10 +7,10 @@ This guide provides instructions for contributing to this Capacitor plugin.
 ### Local Setup
 
 1. Fork and clone the repo.
-1. Install the dependencies.
+1. Install [Bun](https://bun.sh/) and install the dependencies.
 
     ```shell
-    npm install
+    bun install
     ```
 
 1. Install SwiftLint if you're on macOS.
@@ -43,7 +43,7 @@ This template is integrated with ESLint, Prettier, and SwiftLint. Using these to
 
 ## Publishing
 
-There is a `prepublishOnly` hook in `package.json` which prepares the plugin before publishing, so all you need to do is run:
+There is a `prepublishOnly` hook in `package.json` which prepares the plugin before publishing (it runs `bun run build`), so you need Bun installed. Then run:
 
 ```shell
 npm publish

@@ -92,6 +92,7 @@ async function generateChangelog(prompt, model) {
     body: JSON.stringify({
       messages: [{ role: 'user', content: prompt }],
     }),
+    signal: AbortSignal.timeout(90_000),
   });
 
   const payload = await response.json();

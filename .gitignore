@@ -1,6 +1,9 @@
 # node files
 dist
 node_modules
+.env
+.env.*
+!.env.example
 
 # iOS files
 Pods
