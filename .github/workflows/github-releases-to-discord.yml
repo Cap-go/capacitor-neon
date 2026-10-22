@@ -1,5 +1,8 @@
 name: GitHub Releases to Discord
 
+permissions:
+  contents: read
+
 on:
   release:
     types: [published]

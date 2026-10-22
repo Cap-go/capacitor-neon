@@ -20,7 +20,7 @@ function parseArgs(argv) {
 }
 
 function git(args) {
-  return execFileSync('/usr/bin/git', args, { encoding: 'utf8' }).trim();
+  return execFileSync('git', args, { encoding: 'utf8' }).trim();
 }
 
 function resolveTags({ fromTag, toTag }) {
@@ -95,9 +95,12 @@ async function generateChangelog(prompt, model) {
     signal: AbortSignal.timeout(90_000),
   });
 
-  const payload = await response.json();
-  if (!response.ok || !payload.success) {
-    throw new Error(`Cloudflare AI request failed with status ${response.status}`);
+  const payload = await response.json().catch(() => null);
+  if (!response.ok || !payload?.success) {
+    const reason = payload?.errors?.map((error) => error.message).join('; ');
+    throw new Error(
+      `Cloudflare AI request failed with status ${response.status}${reason ? `: ${reason}` : ''}`,
+    );
   }
 
   const content = payload.result?.choices?.[0]?.message?.content ?? payload.result?.response;
@@ -125,6 +128,8 @@ const prompt = buildPrompt(previousTag, currentTag);
 
 console.error(`Generating changelog with ${model}`);
 console.error(`Range: ${previousTag}..${currentTag}`);
+
+writeGithubOutput({ result: '', fromTag: previousTag, toTag: currentTag });
 
 try {
   const result = await generateChangelog(prompt, model);

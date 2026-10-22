@@ -38,9 +38,9 @@ DerivedData/
 *.class
 
 # Generated files
-bin
-gen
-out
+android/bin
+android/gen
+android/out
 
 # Gradle files
 .gradle

@@ -21,7 +21,7 @@ This guide provides instructions for contributing to this Capacitor plugin.
 
 ### Scripts
 
-#### `npm run build`
+#### `bun run build`
 
 Build the plugin web assets and generate plugin API documentation using [`@capacitor/docgen`](https://github.com/ionic-team/capacitor-docgen).
 
@@ -29,24 +29,20 @@ It will compile the TypeScript code from `src/` into ESM JavaScript in `dist/esm
 
 Then, Rollup will bundle the code into a single file at `dist/plugin.js`. This file is used in apps without bundlers by including it as a script in `index.html`.
 
-#### `npm run verify`
+#### `bun run verify`
 
 Build and validate the web and native projects.
 
 This is useful to run in CI to verify that the plugin builds for all platforms.
 
-#### `npm run lint` / `npm run fmt`
+#### `bun run lint` / `bun run fmt`
 
 Check formatting and code quality, autoformat/autofix if possible.
 
-This template is integrated with ESLint, Prettier, and SwiftLint. Using these tools is completely optional, but the [Capacitor Community](https://github.com/capacitor-community/) strives to have consistent code style and structure for easier cooperation.
+CI runs `bun run lint`, so run these checks before opening a pull request.
 
 ## Publishing
 
-There is a `prepublishOnly` hook in `package.json` which prepares the plugin before publishing (it runs `bun run build`), so you need Bun installed. Then run:
-
-```shell
-npm publish
-```
+Releases are published by maintainers through GitHub Actions when a version tag is pushed. The workflow builds the package, stages npm publish with provenance, and creates the GitHub release.
 
 > **Note**: The [`files`](https://docs.npmjs.com/cli/v7/configuring-npm/package-json#files) array in `package.json` specifies which files get published. If you rename files/directories or add files elsewhere, you may need to update it.

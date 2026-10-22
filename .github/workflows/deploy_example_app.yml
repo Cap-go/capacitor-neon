@@ -62,7 +62,7 @@ jobs:
 
       - name: Deploy to Capgo
         working-directory: example-app
-        run: bunx @capgo/cli@latest bundle upload app.capgo.neon --bundle "$BUNDLE_VERSION" --path dist --channel production --package-json package.json,../package.json --node-modules node_modules,../node_modules --delta --no-key --ignore-checksum-check --apikey "$CAPGO_TOKEN"
+        run: bunx @capgo/cli@latest bundle upload com.capacitorneon.example --bundle "$BUNDLE_VERSION" --path dist --channel production --package-json package.json,../package.json --node-modules node_modules,../node_modules --delta --no-key --ignore-checksum-check --apikey "$CAPGO_TOKEN"
         env:
           CAPGO_TOKEN: ${{ secrets.CAPGO_TOKEN }}
           BUNDLE_VERSION: ${{ steps.bundle.outputs.version }}

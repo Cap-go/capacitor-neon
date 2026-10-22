@@ -11,14 +11,12 @@ on:
         required: true
         type: number
 
-permissions:
-  contents: read
-  id-token: write
-  issues: write
-  pull-requests: write
-
 jobs:
   build:
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     if: ${{ github.event_name == 'workflow_dispatch' || (github.event.issue.pull_request && contains(github.event.comment.body, '/publish-beta') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)) }}
     runs-on: ubuntu-latest
     concurrency:
@@ -107,6 +105,7 @@ jobs:
                     commits(last: 1) {
                       nodes {
                         commit {
+                          oid
                           statusCheckRollup {
                             state
                           }
@@ -123,7 +122,15 @@ jobs:
               },
             );
 
-            const rollupState = prState.repository.pullRequest.commits.nodes[0]?.commit.statusCheckRollup?.state ?? 'PENDING';
+            const latestCommit = prState.repository.pullRequest.commits.nodes[0]?.commit;
+            const rollupState = latestCommit?.statusCheckRollup?.state ?? 'PENDING';
+            const checkedSha = latestCommit?.oid;
+
+            if (checkedSha !== pr.head.sha) {
+              core.setOutput('authorized', 'false');
+              core.setFailed('PR head moved while checks were evaluated. Re-run after the latest commit is green.');
+              return;
+            }
 
             if (rollupState !== 'SUCCESS') {
               core.setOutput('authorized', 'false');
@@ -235,6 +242,11 @@ jobs:
 
   publish:
     needs: build
+    permissions:
+      contents: read
+      id-token: write
+      issues: write
+      pull-requests: write
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -264,12 +276,13 @@ jobs:
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.NPM_STAGE_DISPATCH_TOKEN }}
+          PACKAGE_NAME: ${{ needs.build.outputs.package_name }}
         run: |
           gh api --method POST repos/Cap-go/automations/dispatches \
             -f event_type=npm-stage-approve \
             -f "client_payload[repository]=${GITHUB_REPOSITORY}" \
             -f "client_payload[run_id]=${GITHUB_RUN_ID}" \
-            -f "client_payload[package]=${{ needs.build.outputs.package_name }}"
+            -f "client_payload[package]=${PACKAGE_NAME}"
       - name: Publish success comment
         if: ${{ success() }}
         uses: actions/github-script@v9

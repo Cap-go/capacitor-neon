@@ -11,6 +11,9 @@
       "matchManagers": [
         "npm"
       ],
+      "matchUpdateTypes": [
+        "major"
+      ],
       "enabled": false
     }
   ]

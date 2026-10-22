@@ -26,16 +26,10 @@ Paste the output from `bun pm ls @capgo/capacitor-neon` (or `npm ls @capgo/capac
 PASTE OUTPUT HERE
 ```
 
-### context(s)
+### Neon setup
 <!--
-Please change the value acording to your context
+Share your Neon branch setup: Auth URL, Data API URL, trusted origins, and whether you use OAuth or email OTP.
 -->
-```md
-ManualModel: false
-AutoMode: false
-CapgoCloud: false
-OnPremise: false
-```
 
 ### Platform(s)
 <!--

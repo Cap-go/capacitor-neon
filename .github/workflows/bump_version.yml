@@ -53,7 +53,7 @@ jobs:
       - name: Add doc to github
         run: |
           git add README.md
-          git commit --m "docs: update doc" || true
+          git diff --cached --quiet || git commit -m "docs: update doc"
       - name: Create version bump main
         if: github.ref == 'refs/heads/main'
         run: bunx capacitor-plugin-standard-version@latest --skip.changelog
