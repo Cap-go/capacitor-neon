@@ -1,6 +1,6 @@
 {
   "name": "@capgo/capacitor-neon",
-  "version": "8.0.0",
+  "version": "8.1.0",
   "description": "Native Neon Auth and Data API integration for Capacitor: Auth, Database, and JWT access",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
