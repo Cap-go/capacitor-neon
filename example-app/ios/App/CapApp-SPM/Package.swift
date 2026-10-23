@@ -12,7 +12,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/ionic-team/capacitor-swift-pm.git", exact: "8.5.3"),
-        .package(name: "CapacitorNeon", path: "../../../node_modules/.bun/capacitor-neon@file+..+6208176db4c62971/node_modules/capacitor-neon")
+        .package(name: "CapgoCapacitorNeon", path: "../../../node_modules/.bun/@capgo+capacitor-neon@file+..+6208176db4c62971/node_modules/@capgo/capacitor-neon")
     ],
     targets: [
         .target(
@@ -20,7 +20,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Capacitor", package: "capacitor-swift-pm"),
                 .product(name: "Cordova", package: "capacitor-swift-pm"),
-                .product(name: "CapacitorNeon", package: "CapacitorNeon")
+                .product(name: "CapgoCapacitorNeon", package: "CapgoCapacitorNeon")
             ]
         )
     ]

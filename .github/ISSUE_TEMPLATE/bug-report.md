@@ -20,11 +20,16 @@ PASTE OUTPUT HERE
 
 ### Plugin Version
 <!--
-Paste the output from the `npm list capacitor-neon` command into the code block below.
+Paste the output from `bun pm ls @capgo/capacitor-neon` (or `npm ls @capgo/capacitor-neon`) into the code block below.
 -->
 ```
 PASTE OUTPUT HERE
 ```
+
+### Neon setup
+<!--
+Share your Neon branch setup: Auth URL, Data API URL, trusted origins, and whether you use OAuth or email OTP.
+-->
 
 ### Platform(s)
 <!--
@@ -50,6 +55,7 @@ Describe what the behavior should be.
 ### Code Reproduction
 <!--
 To isolate the cause of the problem, we ask you to provide a minimal sample application that demonstrates the issue.
+For full instructions, see: https://github.com/ionic-team/capacitor/blob/HEAD/CONTRIBUTING.md#creating-a-code-reproduction
 -->
 
 

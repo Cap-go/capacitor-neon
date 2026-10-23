@@ -1,5 +1,5 @@
 import './style.css';
-import { CapacitorNeon } from 'capacitor-neon';
+import { CapacitorNeon } from '@capgo/capacitor-neon';
 
 const plugin = CapacitorNeon;
 

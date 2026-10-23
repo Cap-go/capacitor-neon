@@ -1,8 +1,8 @@
-# capacitor-neon
+# @capgo/capacitor-neon
 
 Use Neon Auth and the Neon Data API natively from your Capacitor app for auth and database calls, and get JWTs for your web layer.
 
-<a href="https://capgo.app/?ref=plugin_neon"><img src="https://raw.githubusercontent.com/rishi-raj-jain/capacitor-neon/main/assets/readme-banner.svg" alt="Capgo - Build Capacitor apps with AI, ship updates instantly" /></a>
+<a href="https://capgo.app/?ref=plugin_neon"><img src="https://capgo.app/readme-banner.svg?repo=Cap-go/capacitor-neon" alt="Capgo - Build Capacitor apps with AI, ship updates instantly" /></a>
 
 <div align="center">
   <p><b>Capgo</b>: push fixes to your Capacitor users in minutes, build signed iOS and Android apps without a Mac, and roll back in one click.</p>
@@ -10,10 +10,10 @@ Use Neon Auth and the Neon Data API natively from your Capacitor app for auth an
   <p>14-day unlimited free trial. No credit card required</p>
 </div>
 
-> 🤖 **Building with an AI coding agent?** Install [Capgo skills](https://capgo.app/skills/?ref=plugin_neon) so Claude Code, Codex, Cursor, Copilot, or Gemini CLI know how to install and use `capacitor-neon` in your Capacitor app: `npx skills add Cap-go/capgo-skills`. Then ask your agent: *"Add capacitor-neon to my Capacitor app and wire it up."* [Agent setup guides](https://capgo.app/agents/?ref=plugin_neon) · [Hosted MCP](https://capgo.app/docs/ai/mcp/?ref=plugin_neon)
+> 🤖 **Building with an AI coding agent?** Install [Capgo skills](https://capgo.app/skills/?ref=plugin_neon) so Claude Code, Codex, Cursor, Copilot, or Gemini CLI know how to install and use `@capgo/capacitor-neon` in your Capacitor app: `npx skills add Cap-go/capgo-skills`. Then ask your agent: *"Add @capgo/capacitor-neon to my Capacitor app and wire it up."* [Agent setup guides](https://capgo.app/agents/?ref=plugin_neon) · [Hosted MCP](https://capgo.app/docs/ai/mcp/?ref=plugin_neon)
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/rishi-raj-jain/capacitor-neon/main/assets/github-social-preview.png" alt="capacitor-neon for Capacitor apps" width="300" />
+  <img src="https://raw.githubusercontent.com/Cap-go/capacitor-neon/main/assets/github-social-preview.png" alt="@capgo/capacitor-neon for Capacitor apps" width="300" />
 </p>
 
 ## Key features
@@ -65,20 +65,20 @@ Perfect for apps that need secure native authentication while using Neon's Postg
 You can use our AI-Assisted Setup to install the plugin. Add the Capgo skills to your AI tool using the following command:
 
 ```bash
-npx skills add https://github.com/cap-go/capacitor-skills --skill capacitor-plugins
+npx skills add https://github.com/Cap-go/capgo-skills --skill capacitor-plugins
 ```
 
 Then use the following prompt:
 
 ```text
-Use the `capacitor-plugins` skill from `cap-go/capacitor-skills` to install the `capacitor-neon` plugin in my project.
+Use the `capacitor-plugins` skill from `Cap-go/capgo-skills` to install the `@capgo/capacitor-neon` plugin in my project.
 ```
 
 If you prefer Manual Setup, install the plugin by running the following commands and follow the platform-specific instructions below:
 
 ```bash
-npm install capacitor-neon
-npx cap sync
+bun add @capgo/capacitor-neon
+bunx cap sync
 ```
 
 ## Neon Setup
@@ -110,7 +110,7 @@ For OAuth, set up an App Link or a custom URL scheme for the `redirectTo` URL yo
 ### Initialize the Client
 
 ```typescript
-import { CapacitorNeon } from 'capacitor-neon';
+import { CapacitorNeon } from '@capgo/capacitor-neon';
 
 await CapacitorNeon.initialize({
   authUrl: 'https://ep-xxx.neonauth.us-east-2.aws.neon.tech/neondb/auth',
@@ -264,7 +264,7 @@ The main use case is to get the JWT from native auth and use it with the JavaScr
 
 ```typescript
 import { createClient } from '@neondatabase/neon-js';
-import { CapacitorNeon } from 'capacitor-neon';
+import { CapacitorNeon } from '@capgo/capacitor-neon';
 
 // Initialize native client
 await CapacitorNeon.initialize({

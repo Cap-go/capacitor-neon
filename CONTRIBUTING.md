@@ -1,53 +1,48 @@
 # Contributing
 
-We welcome contributions to `capacitor-neon`!
+This guide provides instructions for contributing to this Capacitor plugin.
 
-## Development Setup
+## Developing
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Build the plugin: `npm run build`
+### Local Setup
 
-## Building
+1. Fork and clone the repo.
+1. Install [Bun](https://bun.sh/) and install the dependencies.
 
-```bash
-npm run build
-```
+    ```shell
+    bun install
+    ```
 
-## Testing
+1. Install SwiftLint if you're on macOS.
 
-### iOS
-```bash
-npm run verify:ios
-```
+    ```shell
+    brew install swiftlint
+    ```
 
-### Android
-```bash
-npm run verify:android
-```
+### Scripts
 
-### Web
-```bash
-npm run verify:web
-```
+#### `bun run build`
 
-## Code Style
+Build the plugin web assets and generate plugin API documentation using [`@capacitor/docgen`](https://github.com/ionic-team/capacitor-docgen).
 
-This project uses ESLint and Prettier for code formatting:
+It will compile the TypeScript code from `src/` into ESM JavaScript in `dist/esm/`. These files are used in apps with bundlers when your plugin is imported.
 
-```bash
-npm run lint    # Check for issues
-npm run fmt     # Auto-fix issues
-```
+Then, Rollup will bundle the code into a single file at `dist/plugin.js`. This file is used in apps without bundlers by including it as a script in `index.html`.
 
-## Submitting Changes
+#### `bun run verify`
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
-5. Submit a pull request
+Build and validate the web and native projects.
 
-## Questions?
+This is useful to run in CI to verify that the plugin builds for all platforms.
 
-Open an issue on GitHub if you have questions or need help.
+#### `bun run lint` / `bun run fmt`
+
+Check formatting and code quality, autoformat/autofix if possible.
+
+CI runs `bun run lint`, so run these checks before opening a pull request.
+
+## Publishing
+
+Releases are published by maintainers through GitHub Actions when a version tag is pushed. The workflow builds the package, stages npm publish with provenance, and creates the GitHub release.
+
+> **Note**: The [`files`](https://docs.npmjs.com/cli/v7/configuring-npm/package-json#files) array in `package.json` specifies which files get published. If you rename files/directories or add files elsewhere, you may need to update it.
