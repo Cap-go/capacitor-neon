@@ -3,7 +3,7 @@ import Capacitor
 
 @objc(CapacitorNeonPlugin)
 public class CapacitorNeonPlugin: CAPPlugin, CAPBridgedPlugin {
-    private let pluginVersion: String = "8.1.1"
+    private let pluginVersion: String = "8.1.2"
     public let identifier = "CapacitorNeonPlugin"
     public let jsName = "CapacitorNeon"
     public let pluginMethods: [CAPPluginMethod] = [
